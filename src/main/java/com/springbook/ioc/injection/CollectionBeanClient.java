@@ -9,7 +9,7 @@ public class CollectionBeanClient {
 	public static void main(String[] args) {
 		AbstractApplicationContext factory = new GenericXmlApplicationContext("applicationContext.xml");
 		
-		CollectionBean bean = (CollectionBean)factory.getBean("collectionBean");
+//		CollectionBean bean = (CollectionBean)factory.getBean("collectionBean");
 		
 		//List
 //		List<String> addressList = bean.getAddressList();
@@ -26,12 +26,12 @@ public class CollectionBeanClient {
 //		}
 		
 		//Properties
-		Properties addressList = bean.getAddressList();
-		
-		for(Object name : addressList.keySet()) {
-			String address = addressList.getProperty((String)name);
-			System.out.println(name + " : " + address);
-		}
-		factory.close();
+//		Properties addressList = bean.getAddressList();
+//		
+//		for(Object name : addressList.keySet()) {
+//			String address = addressList.getProperty((String)name);
+//			System.out.println(name + " : " + address);
+//		}
+//		factory.close();
 	}
 }
