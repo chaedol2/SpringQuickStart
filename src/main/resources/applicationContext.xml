@@ -11,6 +11,12 @@
 	
 	<context:component-scan base-package="com.springbook.biz"></context:component-scan>
 	
+	<bean id="userService" class="com.springbook.biz.user.impl.UserServiceImpl">
+		<property name="userDAO" ref="userDAO" />
+	</bean>
+	
+	<bean id="userDAO" class="com.springbook.biz.user.impl.UserDAO" />
+	
 	<!-- 객체를 생성한 후에 멤버변수 초기화 작업이 필요할때 servlet의 init()과 같은 메소드, 객체를 생성한 후에 init-method 속성으로 지정된 initMethod() 메소드 호출 -->
 	<!-- <bean id="tv" class="polymorphism.SamsungTV" init-method="initMethod" /> -->
 	
