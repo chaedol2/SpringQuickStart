@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import com.springbook.biz.board.BoardVO;
 
-
 ////첫번째 방법
 //// DAO(Data Access Object)
 //@Repository
