@@ -12,7 +12,41 @@
 	<context:component-scan base-package="com.springbook.biz" />
 
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
-
+	
+	<!-- SqlSessionFactoryBean 객체에서 SqlSession 객체 얻기 첫번쨰방법 -->
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="configuration" value="classpath:sql=map-config.xml"/>
+	</bean>
+	
+	<!-- 스프링과 JPA 연동 설정 -->
+	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"></bean>
+	
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapter"></property>
+		<property name="packagesToScan" value="com.springbook.biz.board"></property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.OracleDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.use_sql_comments">true</prop>
+				<prop key="hibernate.id.new_generator_mappings">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- SqlSessionFactoryBean 객체에서 SqlSession 객체 얻기 두번쨰방법 -->
+	<!-- <bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:sql-map-config.xml"/>
+		<property name="dataSource" ref="dataSource"/>
+	</bean> -->
+	<!-- SqlSessionTemplate 클래스는 setter 메소드가 없어서 생성자로 주입 DAO 클래스 구현시 사용 -->
+	<!-- <bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSession"></constructor-arg>
+	</bean> -->
+	
 	<!-- DataSource 설정 -->
 	<context:property-placeholder location="classpath:config/database.properties" />
 
@@ -29,9 +63,21 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
-	<!-- Transaction 설정 -->
-	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<!-- Transaction 설정 JDBC or Mybatis -->
+	<!-- <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true"/>
+			<tx:method name="*"/>
+		</tx:attributes>
+	</tx:advice> -->
+	
+	<!-- Transaction 설정 JPA -->
+	<bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"></property>
 	</bean>
 	
 	<tx:advice id="txAdvice" transaction-manager="txManager">
@@ -42,7 +88,7 @@
 	</tx:advice>
 	
 	<aop:config>
-		<aop:pointcut id="txPointcut"  expression="execution(* com.springbook.biz..*(..))"/>
+		<aop:pointcut id="txPointcut"  expression="execution(* com.springbook.biz..*Impl.*(..))"/>
 		
 		<aop:advisor pointcut-ref="txPointcut" advice-ref="txAdvice"/>
 	</aop:config>

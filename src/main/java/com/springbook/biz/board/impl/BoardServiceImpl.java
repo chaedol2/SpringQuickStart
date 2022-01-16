@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import com.springbook.biz.board.BoardService;
 import com.springbook.biz.board.BoardVO;
 
+
+
 @Service("boardService")
 public class BoardServiceImpl implements BoardService{
    @Autowired
-   private BoardDAO boardDAO;
+   private BoardDAOJPA boardDAO;
    
    public void insertBoard(BoardVO vo) {
 //	  if(vo.getSeq() == 0) {
